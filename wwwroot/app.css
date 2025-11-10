@@ -1,5 +1,9 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* Prevent the whole page from scrolling horizontally */
+    overflow-x: hidden;
+    /* Make the app layout use the viewport height */
+    height: 100%;
 }
 
 a, .btn-link {

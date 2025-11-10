@@ -2,10 +2,16 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    /* Fill full viewport height to keep header/sidebar in view */
+    min-height: 100vh;
 }
 
 main {
     flex: 1;
+    /* Allow the main column to shrink so inner scrollers can contain overflow */
+    min-width: 0;
+    /* Prevent page-level horizontal scroll */
+    overflow-x: hidden;
 }
 
 .sidebar {
@@ -19,6 +25,10 @@ main {
     height: 3.5rem;
     display: flex;
     align-items: center;
+    /* Keep the About bar always visible */
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {

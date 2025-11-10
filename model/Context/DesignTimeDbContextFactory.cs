@@ -10,17 +10,17 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-        // Build configuration similar to Program.cs
+        // Build configuration similar to Program.cs, strictly from appsettings.json
         var config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true)
-            .AddEnvironmentVariables()
+            .AddJsonFile("appsettings.json", optional: false)
             .Build();
 
-        var connStr = config.GetConnectionString("Default")
-                     ?? config["ConnectionString"]
-                     ?? Environment.GetEnvironmentVariable("ConnectionStrings__Default")
-                     ?? "Server=localhost,1430;Database=PrestaToSap;User Id=sa;Password=UHJlc3RhVG9TYXAxIQ;TrustServerCertificate=True;Encrypt=False;";
+        var connStr = config.GetConnectionString("Default");
+        if (string.IsNullOrWhiteSpace(connStr))
+        {
+            throw new InvalidOperationException("Database connection string 'ConnectionStrings:Default' is missing in appsettings.json.");
+        }
 
         optionsBuilder.UseSqlServer(connStr);
         return new AppDbContext(optionsBuilder.Options);

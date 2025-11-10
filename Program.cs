@@ -17,13 +17,16 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
         
-        // Database configuration: use SQL Server via connection string
+        // Configuration: read only from appsettings.json files (no environment variables)
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables();
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-        var connectionString = builder.Configuration.GetConnectionString("Default")
-                               ?? "Server=localhost,1433;Database=PrestaToSap;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;Encrypt=False;";
+        // Get connection string strictly from appsettings.json (ConnectionStrings:Default)
+        var connectionString = builder.Configuration.GetConnectionString("Default");
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException("Database connection string 'ConnectionStrings:Default' is missing in appsettings.json.");
+        }
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));

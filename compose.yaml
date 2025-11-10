@@ -13,11 +13,11 @@ services:
       - mssqldata:/var/opt/mssql
     restart: unless-stopped
     networks:
-      - prestatosap-network
+      - network
 
 volumes:
   mssqldata:
 
 networks:
-  prestatosap-network:
+  network:
     driver: bridge

@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using PrestaToSap.Components;
 using PrestaToSap.model.Context;
+using System;
+using System.Linq;
+using System.Threading;
 
 namespace PrestaToSap;
 
@@ -8,25 +11,52 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        // Ensure SQLite native bits are initialized for design-time and runtime
-        SQLitePCL.Batteries.Init();
-
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
         
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite("Data Source=PrestaToSap.db"));
-        
-        // builder configurations setup
+        // Database configuration: use SQL Server via connection string
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
+
+        var connectionString = builder.Configuration.GetConnectionString("Default")
+                               ?? "Server=localhost,1433;Database=PrestaToSap;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;Encrypt=False;";
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(connectionString));
         
 
         var app = builder.Build();
+
+        // Apply database schema: wait for DB and use migrations when present; otherwise create schema
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            const int maxAttempts = 10;
+            var delay = TimeSpan.FromSeconds(3);
+            for (var attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    if (!db.Database.GetMigrations().Any())
+                    {
+                        db.Database.EnsureCreated();
+                    }
+                    else
+                    {
+                        db.Database.Migrate();
+                    }
+                    break;
+                }
+                catch (Exception) when (attempt < maxAttempts)
+                {
+                    Thread.Sleep(delay);
+                }
+            }
+        }
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())

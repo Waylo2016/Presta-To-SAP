@@ -7,11 +7,10 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
 {
     public AppDbContext CreateDbContext(string[] args)
     {
-        // Ensure SQLite native components are available for EF tooling
-        SQLitePCL.Batteries.Init();
-
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlite("Data Source=PrestaToSap.db");
+        var connStr = Environment.GetEnvironmentVariable("ConnectionStrings__Default")
+                      ?? "Server=localhost,1433;Database=PrestaToSap;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;Encrypt=False;";
+        optionsBuilder.UseSqlServer(connStr);
         return new AppDbContext(optionsBuilder.Options);
     }
 }

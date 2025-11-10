@@ -1,0 +1,15 @@
+﻿.orders-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    max-width: 100%;
+    /* Prevent scroll chaining to the page */
+    overscroll-behavior-x: contain;
+}
+
+.orders-scroll .table {
+    /* Prevent cell content from wrapping so the table can extend horizontally */
+    white-space: nowrap;
+    /* Let the table grow to its content width so horizontal scrollbar appears only here */
+    width: max-content;
+}

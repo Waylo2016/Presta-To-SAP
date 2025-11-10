@@ -22,7 +22,11 @@ public class Program
             app.UseHsts();
         }
 
-        app.UseHttpsRedirection();
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+        // In IIS without HTTPS binding, HTTPS redirection can cause issues; enable once HTTPS is configured.
 
         app.UseStaticFiles();
         app.UseAntiforgery();

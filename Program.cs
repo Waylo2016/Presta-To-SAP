@@ -68,11 +68,7 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseHttpsRedirection();
-        }
+        
         // In IIS without HTTPS binding, HTTPS redirection can cause issues; enable once HTTPS is configured.
 
         app.UseStaticFiles();

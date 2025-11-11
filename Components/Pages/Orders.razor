@@ -1,9 +1,46 @@
 ﻿@page "/orders"
+@using PrestaToSap.API
+
+
 @attribute [StreamRendering]
 
 <PageTitle>Orders</PageTitle>
 
 <h1>Orders</h1>
+
+
+
+@*
+@if (orderLines?.Any() == true)
+{
+    <ul>
+        @foreach (var line in orderLines)
+        {
+            <li>@line</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No order links found.</p>
+}
+
+@code {
+    private List<string> orderLines = new();
+
+    protected override void OnInitialized()
+    {
+        var api = new CallAPI();
+        orderLines = api.CallOrders() ?? new List<string>();
+
+        // write to the server console so dotnet watch run shows it
+        foreach (var l in orderLines)
+        {
+            Console.WriteLine(l);
+        }
+    }
+}
+*@
 
 @if (forecasts == null)
 {

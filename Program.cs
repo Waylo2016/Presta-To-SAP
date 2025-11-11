@@ -1,9 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PrestaToSap.Components;
 using PrestaToSap.model.Context;
-using System;
-using System.Linq;
-using System.Threading;
 
 namespace PrestaToSap;
 
@@ -69,7 +66,6 @@ public class Program
             app.UseHsts();
         }
         
-        // In IIS without HTTPS binding, HTTPS redirection can cause issues; enable once HTTPS is configured.
 
         app.UseStaticFiles();
         app.UseAntiforgery();

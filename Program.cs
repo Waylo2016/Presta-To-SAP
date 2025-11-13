@@ -32,11 +32,9 @@ public class Program
             options.UseSqlServer(connectionString));
 
         builder.Services.AddHttpClient();
-
-        builder.Services.AddScoped<PrestaApiService>();
-
-        builder.Services.AddScoped<CallAPI>();
         
+        // Add scoped services
+        builder.Services.AddScoped<PrestaApiService>();
         builder.Services.AddScoped<PrestaOrderIngestionService>();
         
 

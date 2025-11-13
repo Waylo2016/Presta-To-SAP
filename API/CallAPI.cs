@@ -1,23 +1,26 @@
-﻿namespace PrestaToSap.API;
+﻿using PrestaToSap.services;
+
+namespace PrestaToSap.API;
 
 public class CallAPI
 {
-    
-    public void CallOrders()
+    private readonly PrestaApiService _prestaApiService;
+    private readonly ILogger<CallAPI> _logger;
+
+    public CallAPI(PrestaApiService prestaApiService, ILogger<CallAPI> logger)
     {
-        APIController apiController = new();
-        // keep existing calls; APIController should read appsettings
-        var apiLinks = apiController.GetAPILinks();
-        var apiOrderFilters = apiController.GetApiOrders();
-        
-        //TODO: call API and upload the data into the database
-        
-        // I don't want to do it rn ueueueueue
-        foreach (var kv in apiOrderFilters)
-        {
-            
-        }
-        
+        _prestaApiService = prestaApiService;
+        _logger = logger;
     }
+/*
+    public async Task<Dictionary<string, List<string>>> CallOrdersAsync()
+    {
+        string lastHour = GetLastHour();
+        
+        Dictionary<string, List<string>> results = await _prestaApiService.GetOrderDetailsFromAllEndpointsAsync(lastHour);
+        return results;
+    }
+    */
+
 }
 

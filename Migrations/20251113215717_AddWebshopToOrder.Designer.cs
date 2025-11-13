@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrestaToSap.model.Context;
 
@@ -11,9 +12,11 @@ using PrestaToSap.model.Context;
 namespace PrestaToSap.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251113215717_AddWebshopToOrder")]
+    partial class AddWebshopToOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,167 +34,173 @@ namespace PrestaToSap.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CRNDeliveryNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CRNInvoiceNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("CarrierTaxRate")
+                    b.Property<decimal>("CarrierTaxRate")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<decimal?>("ConversionRate")
+                    b.Property<decimal>("ConversionRate")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<int?>("CurrentState")
+                    b.Property<int>("CurrentState")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateAdd")
+                    b.Property<DateTime>("DateAdd")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateUpd")
+                    b.Property<DateTime>("DateUpd")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DeliveryDate")
+                    b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DeliveryNumber")
+                    b.Property<int>("DeliveryNumber")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Gift")
+                    b.Property<int>("Gift")
                         .HasColumnType("int");
 
                     b.Property<string>("GiftMessage")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("IdAddressDelivery")
+                    b.Property<int>("IdAddressDelivery")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdAddressInvoice")
+                    b.Property<int>("IdAddressInvoice")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdCarrier")
+                    b.Property<int>("IdCarrier")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdCart")
+                    b.Property<int>("IdCart")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdCurrency")
+                    b.Property<int>("IdCurrency")
                         .HasColumnType("int");
 
                     b.Property<int>("IdCustomer")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdLang")
+                    b.Property<int>("IdLang")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdShop")
+                    b.Property<int>("IdShop")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdShopGroup")
+                    b.Property<int>("IdShopGroup")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("InvoiceDate")
+                    b.Property<DateTime>("InvoiceDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InvoiceNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MobileTheme")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Module")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Payment")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PrestaOrderId")
+                    b.Property<int>("Recyclable")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Recyclable")
+                    b.Property<int>("Reference")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Reference")
+                    b.Property<int>("RoundMode")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoundMode")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RoundType")
+                    b.Property<int>("RoundType")
                         .HasColumnType("int");
 
                     b.Property<string>("SecureKey")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShippingNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("TotalDiscounts")
+                    b.Property<decimal>("TotalDiscounts")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalDiscountsTaxExcl")
+                    b.Property<decimal>("TotalDiscountsTaxExcl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalDiscountsTaxIncl")
+                    b.Property<decimal>("TotalDiscountsTaxIncl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalPaid")
+                    b.Property<decimal>("TotalPaid")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalPaidReal")
+                    b.Property<decimal>("TotalPaidReal")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalPaidTaxExcl")
+                    b.Property<decimal>("TotalPaidTaxExcl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalPaidTaxIncl")
+                    b.Property<decimal>("TotalPaidTaxIncl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalProducts")
+                    b.Property<decimal>("TotalProducts")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalProductsWt")
+                    b.Property<decimal>("TotalProductsWt")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalShipping")
+                    b.Property<decimal>("TotalShipping")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalShippingTaxExcl")
+                    b.Property<decimal>("TotalShippingTaxExcl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalShippingTaxIncl")
+                    b.Property<decimal>("TotalShippingTaxIncl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalWrapping")
+                    b.Property<decimal>("TotalWrapping")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalWrappingTaxExcl")
+                    b.Property<decimal>("TotalWrappingTaxExcl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalWrappingTaxIncl")
+                    b.Property<decimal>("TotalWrappingTaxIncl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("Valid")
+                    b.Property<int>("Valid")
                         .HasColumnType("int");
 
                     b.Property<string>("Webshop")
@@ -211,45 +220,50 @@ namespace PrestaToSap.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("IdCustomization")
+                    b.Property<int>("IdCustomization")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductAttributeId")
+                    b.Property<int>("ProductAttributeId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductEan13")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductIsbn")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("ProductPrice")
+                    b.Property<decimal>("ProductPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ProductQuantity")
+                    b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductReference")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductUpc")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("UnitPriceTaxExcl")
+                    b.Property<decimal>("UnitPriceTaxExcl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("UnitPriceTaxIncl")
+                    b.Property<decimal>("UnitPriceTaxIncl")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 

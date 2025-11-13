@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using PrestaToSap.API;
 using PrestaToSap.Components;
 using PrestaToSap.model.Context;
+using PrestaToSap.services;
 
 namespace PrestaToSap;
 
@@ -10,10 +12,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-        builder.Services.AddRazorComponents()
-            .AddInteractiveServerComponents();
-        
+           
         // Configuration: read only from appsettings.json files (no environment variables)
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
@@ -24,9 +23,21 @@ public class Program
         {
             throw new InvalidOperationException("Database connection string 'ConnectionStrings:Default' is missing in appsettings.json.");
         }
+        
+        // Add services to the container.
+        builder.Services.AddRazorComponents()
+            .AddInteractiveServerComponents();
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
+
+        builder.Services.AddHttpClient();
+
+        builder.Services.AddScoped<PrestaApiService>();
+
+        builder.Services.AddScoped<CallAPI>();
+        
+        builder.Services.AddScoped<PrestaOrderIngestionService>();
         
 
         var app = builder.Build();

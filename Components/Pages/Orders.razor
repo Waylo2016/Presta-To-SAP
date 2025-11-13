@@ -1,6 +1,10 @@
 ﻿@page "/orders"
-@using PrestaToSap.API
-
+@using Microsoft.EntityFrameworkCore
+@using PrestaToSap.services
+@using PrestaToSap.model.Context
+@inject PrestaOrderIngestionService IngestionService
+@inject AppDbContext Db
+@inject ILogger<Orders> Logger
 
 @attribute [StreamRendering]
 
@@ -8,40 +12,88 @@
 
 <h1>Orders</h1>
 
-
-
-@*
-@if (orderLines?.Any() == true)
+@if (isLoading)
 {
-    <ul>
-        @foreach (var line in orderLines)
-        {
-            <li>@line</li>
-        }
-    </ul>
+    <p><em>Loading...</em></p>
+}
+else if (ordersList == null || !ordersList.Any())
+{
+    <p>No orders found.</p>
 }
 else
 {
-    <p>No order links found.</p>
+    <div class="orders-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ordernummer</th>
+                    <th>Klantnummer</th>
+                    <th>Factuurnummer</th>
+                    <th>Aantal producten</th>
+                    <th>Webshop</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in ordersList)
+                {
+                    <tr>
+                        <td>@o.OrderNumber</td>
+                        <td>@o.CustomerNumber</td>
+                        <td>@o.InvoiceNumber</td>
+                        <td>@o.ProductCount</td>
+                        <td>@o.Webshop</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 @code {
-    private List<string> orderLines = new();
+    private record OrderDisplay(
+        int OrderNumber,
+        int CustomerNumber,
+        string? InvoiceNumber,
+        int ProductCount,
+        string Webshop
+    );
 
-    protected override void OnInitialized()
+    private List<OrderDisplay>? ordersList;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
     {
-        var api = new CallAPI();
-        orderLines = api.CallOrders() ?? new List<string>();
-
-        // write to the server console so dotnet watch run shows it
-        foreach (var l in orderLines)
+        try
         {
-            Console.WriteLine(l);
+            isLoading = true;
+
+            // 1) Let the backend do its thing; UI doesn't know about "last hour"
+            // await IngestionService.SyncLastHourOrdersAsync();
+
+            // 2) Load data from the database only
+            ordersList = await Db.Orders
+                .Select(o => new OrderDisplay(
+                    o.PrestaOrderId,
+                    o.IdCustomer,
+                    o.InvoiceNumber,
+                    o.OrderRows.Count,
+                    o.Webshop
+                ))
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading orders for Orders page");
+            ordersList = new List<OrderDisplay>();
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 }
-*@
 
+@*
 @if (forecasts == null)
 {
     <p>
@@ -101,3 +153,4 @@ else
     }
 
 }
+*@

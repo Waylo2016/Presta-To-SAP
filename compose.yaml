@@ -1,0 +1,23 @@
+﻿name: PrestaToSap
+services:
+  mssql:
+    platform: linux/amd64
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: prestatosap-mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "UHJlc3RhVG9TYXAxIQ"
+    ports:
+      - "1430:1433"
+    volumes:
+      - mssqldata:/var/opt/mssql
+    restart: unless-stopped
+    networks:
+      - network
+
+volumes:
+  mssqldata:
+
+networks:
+  network:
+    driver: bridge

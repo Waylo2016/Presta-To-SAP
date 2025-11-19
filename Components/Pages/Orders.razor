@@ -1,68 +1,94 @@
 ﻿@page "/orders"
+@using Microsoft.EntityFrameworkCore
+@using PrestaToSap.services
+@using PrestaToSap.model.Context
+@inject PrestaOrderIngestionService IngestionService
+@inject AppDbContext Db
+@inject ILogger<Orders> Logger
+
 @attribute [StreamRendering]
 
 <PageTitle>Orders</PageTitle>
 
 <h1>Orders</h1>
 
-<p>This component demonstrates showing data.</p>
-
-@if (forecasts == null)
+@if (isLoading)
 {
-    <p>
-        <em>Loading...</em>
-    </p>
+    <p><em>Loading...</em></p>
+}
+else if (ordersList == null || !ordersList.Any())
+{
+    <p>No orders found.</p>
 }
 else
 {
     <div class="orders-scroll">
         <table class="table">
             <thead>
-            <tr>
-                <th>Ordernummer</th>
-                <th>klantnummer</th>
-                <th>factuurnummer</th>
-                <th>aantal producten</th>
-            </tr>
+                <tr>
+                    <th>Ordernummer</th>
+                    <th>Klantnummer</th>
+                    <th>Factuurnummer</th>
+                    <th>Aantal producten</th>
+                    <th>Webshop</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
+                @foreach (var o in ordersList)
+                {
+                    <tr>
+                        <td>@o.OrderNumber</td>
+                        <td>@o.CustomerNumber</td>
+                        <td>@o.InvoiceNumber</td>
+                        <td>@o.ProductCount</td>
+                        <td>@o.Webshop</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private record OrderDisplay(
+        int OrderNumber,
+        int CustomerNumber,
+        string? InvoiceNumber,
+        int ProductCount,
+        string Webshop
+    );
+
+    private List<OrderDisplay>? ordersList;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        try
         {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
-    }
+            isLoading = true;
 
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
+            // sync data with presta shop API's, still have to make it so this only runs once an hour as a service, instead of on the front end page load
+            // await IngestionService.SyncLastHourOrdersAsync();
 
+            // 2) Load data from the database only
+            ordersList = await Db.Orders
+                .Select(o => new OrderDisplay(
+                    o.PrestaOrderId,
+                    o.IdCustomer,
+                    o.InvoiceNumber,
+                    o.OrderRows.Count,
+                    o.Webshop
+                ))
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading orders for Orders page");
+            ordersList = new List<OrderDisplay>();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 }
